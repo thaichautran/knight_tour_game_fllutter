@@ -5,7 +5,7 @@
 const gameLevels = [
   GameLevel(
     number: 1,
-    difficulty: 5,
+    difficulty: 6,
     // TODO: When ready, change these achievement IDs.
     // You configure this in App Store Connect.
     achievementIdIOS: 'first_win',
@@ -14,11 +14,11 @@ const gameLevels = [
   ),
   GameLevel(
     number: 2,
-    difficulty: 42,
+    difficulty: 8,
   ),
   GameLevel(
     number: 3,
-    difficulty: 100,
+    difficulty: 10,
     achievementIdIOS: 'finished',
     achievementIdAndroid: 'CdfIhE96aspNWLGSQg',
   ),

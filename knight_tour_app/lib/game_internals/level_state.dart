@@ -25,7 +25,7 @@ class LevelState extends ChangeNotifier {
   }
 
   void evaluate() {
-    if (_progress >= goal) {
+    if (_progress != 0) {
       onWin();
     }
   }

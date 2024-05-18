@@ -44,18 +44,28 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
   bool _duringCelebration = false;
 
   late DateTime _startOfPlay;
+  late Timer _timer;
 
   @override
   void initState() {
     super.initState();
-
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {});
+    });
     _startOfPlay = DateTime.now();
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final palette = context.watch<Palette>();
-
+    final currentTime = DateTime.now();
+    final difference = currentTime.difference(_startOfPlay);
     return MultiProvider(
       providers: [
         Provider.value(value: widget.level),
@@ -81,32 +91,56 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
               // This is the main layout of the play session screen,
               // with a settings button on top, the actual play area
               // in the middle, and a back button at the bottom.
+
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: InkResponse(
-                      onTap: () => GoRouter.of(context).push('/settings'),
-                      child: Image.asset(
-                        'assets/images/settings.png',
-                        semanticLabel: 'Settings',
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: InkResponse(
+                          onTap: () => GoRouter.of(context).pop(),
+                          child: Image.asset(
+                            'assets/images/back.png',
+                            semanticLabel: 'Settings',
+                          ),
+                        ),
                       ),
-                    ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: InkResponse(
+                          onTap: () => GoRouter.of(context).push('/settings'),
+                          child: Image.asset(
+                            'assets/images/settings.png',
+                            semanticLabel: 'Settings',
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  const Spacer(),
-                  const Expanded(
+                  Text(
+                    _formatTime(difference),
+                    style:
+                        TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+                  ),
+                  Expanded(
                     // The actual UI of the game.
-                    child: GameWidget(),
-                  ),
-                  const Spacer(),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: MyButton(
-                      onPressed: () => GoRouter.of(context).go('/play'),
-                      child: const Text('Back'),
+                    child: GameWidget(
+                      boardSize: widget.level.difficulty,
+                      startOfPlay: _startOfPlay,
+                      onStopTimer: _onStopTimer,
+                      onRestartTimer: _onRestartTimer,
                     ),
                   ),
+                  // Padding(
+                  //   padding: const EdgeInsets.all(8.0),
+                  //   child: MyButton(
+                  //     onPressed: () => GoRouter.of(context).go('/play'),
+                  //     child: const Text('Back'),
+                  //   ),
+                  // ),
                 ],
               ),
               // This is the confetti animation that is overlaid on top of the
@@ -126,6 +160,22 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _onStopTimer() async {
+    _timer.cancel();
+  }
+
+  Future<void> _onRestartTimer() async {
+    _startOfPlay = DateTime.now();
+  }
+
+  String _formatTime(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final hours = twoDigits(duration.inHours);
+    final minutes = twoDigits(duration.inMinutes.remainder(60));
+    final seconds = twoDigits(duration.inSeconds.remainder(60));
+    return "$hours:$minutes:$seconds";
   }
 
   Future<void> _playerWon() async {

@@ -2,7 +2,9 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'package:basic/player_progress/persistence/local_storage_player_progress_persistence.dart';
 import 'package:basic/player_progress/persistence/memory_player_progress_persistence.dart';
+import 'package:basic/player_progress/persistence/player_progress_persistence.dart';
 import 'package:basic/player_progress/player_progress.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,19 +17,32 @@ import '../style/my_button.dart';
 import '../style/palette.dart';
 import '../style/responsive_screen.dart';
 
-class WinGameScreen extends StatelessWidget {
-  final Score score;
-
-  const WinGameScreen({
+class AchievementScreen extends StatefulWidget {
+  const AchievementScreen({
     super.key,
-    required this.score,
   });
+  @override
+  State<AchievementScreen> createState() => _AchievementScreenState();
+}
+
+class _AchievementScreenState extends State<AchievementScreen> {
+  List<String> reversedHistory = [];
+
+  @override
+  void initState() {
+    super.initState();
+    final store = LocalStoragePlayerProgressPersistence();
+
+    store.getHistory().then((history) {
+      setState(() {
+        reversedHistory = history.reversed.toList();
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final palette = context.watch<Palette>();
-    final playerProgress = context.read<PlayerProgress>();
-    final reversedHistory = playerProgress.history.reversed.toList();
     const gap = SizedBox(height: 10);
 
     return Scaffold(
@@ -56,9 +71,7 @@ class WinGameScreen extends StatelessWidget {
                     padding: EdgeInsets.only(top: 10, bottom: 10),
                     child: Text(
                       '${index + 1}) $move',
-                      style: index == 0
-                          ? TextStyle(fontSize: 20, fontWeight: FontWeight.bold)
-                          : TextStyle(fontSize: 18),
+                      style: TextStyle(fontSize: 20),
                     ),
                   );
                 },
@@ -68,9 +81,9 @@ class WinGameScreen extends StatelessWidget {
         ),
         rectangularMenuArea: MyButton(
           onPressed: () {
-            GoRouter.of(context).go('/play');
+            GoRouter.of(context).pop();
           },
-          child: const Text('Continue'),
+          child: const Text('Back'),
         ),
       ),
     );

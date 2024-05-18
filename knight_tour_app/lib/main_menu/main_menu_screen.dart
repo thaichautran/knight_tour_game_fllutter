@@ -29,7 +29,7 @@ class MainMenuScreen extends StatelessWidget {
           child: Transform.rotate(
             angle: -0.1,
             child: const Text(
-              'Flutter Game Template!',
+              'Knight Tour Game!',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: 'Permanent Marker',
@@ -55,6 +55,11 @@ class MainMenuScreen extends StatelessWidget {
               child: const Text('Settings'),
             ),
             _gap,
+            MyButton(
+              onPressed: () => GoRouter.of(context).push('/achievements'),
+              child: const Text('Achievements'),
+            ),
+            _gap,
             Padding(
               padding: const EdgeInsets.only(top: 32),
               child: ValueListenableBuilder<bool>(
@@ -67,9 +72,9 @@ class MainMenuScreen extends StatelessWidget {
                 },
               ),
             ),
-            _gap,
-            const Text('Music by Mr Smith'),
-            _gap,
+            // _gap,
+            // const Text('Music by Mr Smith'),
+            // _gap,
           ],
         ),
       ),
