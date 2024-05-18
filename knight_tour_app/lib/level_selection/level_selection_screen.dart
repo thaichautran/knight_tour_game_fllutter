@@ -31,7 +31,7 @@ class LevelSelectionScreen extends StatelessWidget {
               padding: EdgeInsets.all(16),
               child: Center(
                 child: Text(
-                  'Select level',
+                  'Select size board to play!',
                   style:
                       TextStyle(fontFamily: 'Permanent Marker', fontSize: 30),
                 ),
@@ -43,8 +43,8 @@ class LevelSelectionScreen extends StatelessWidget {
                 children: [
                   for (final level in gameLevels)
                     ListTile(
-                      enabled: playerProgress.highestLevelReached >=
-                          level.number - 1,
+                      // enabled: playerProgress.highestLevelReached >=
+                      //     level.number - 1,
                       onTap: () {
                         final audioController = context.read<AudioController>();
                         audioController.playSfx(SfxType.buttonTap);
@@ -53,7 +53,8 @@ class LevelSelectionScreen extends StatelessWidget {
                             .go('/play/session/${level.number}');
                       },
                       leading: Text(level.number.toString()),
-                      title: Text('Level #${level.number}'),
+                      title:
+                          Text('Size ${level.difficulty}x${level.difficulty}'),
                     )
                 ],
               ),

@@ -10,4 +10,8 @@ abstract class PlayerProgressPersistence {
   Future<int> getHighestLevelReached();
 
   Future<void> saveHighestLevelReached(int level);
+
+  Future<List<String>> getHistory();
+
+  Future<void> saveHistory(List<String> history);
 }
